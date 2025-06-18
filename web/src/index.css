@@ -1,8 +1,35 @@
+h1 {
+  font-size: 4.75rem;
+  font-weight: 700; /* Inter Bold */
+}
+
+button {
+  font-weight: 600; /* Inter SemiBold */
+  font-size: 1.15rem;
+  font-weight: 700;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 13px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  letter-spacing: 0.5px;
+}
+
+.button-dark {
+  box-shadow: 0 6px 32px rgba(33, 118, 255, 0.18);
+  background: linear-gradient(90deg, #2176ff 0%, #33aaff 100%);
+  color: #fff;
+}
+
+.button-light {
+  box-shadow: 0 6px 32px rgba(33, 118, 255, 0.18);
+  background: linear-gradient(90deg, #fff 0%, #f3f3f3 100%);
+  color: #2176ff;
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: 'Inter', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

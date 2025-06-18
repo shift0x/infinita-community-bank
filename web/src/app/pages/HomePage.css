@@ -1,0 +1,126 @@
+.homepage-container {
+  min-height: 100vh;
+  /* Dark-to-light blue vertical gradient background matching the mockup */
+  background: linear-gradient(180deg, #0a1a2f 0%, #163e6c 60%, #3a7bd5 100%);
+  color: #fff;
+}
+
+.homepage-header {
+  padding: 40px 64px 0 64px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.homepage-logo-nav {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.homepage-logo {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.homepage-logo-img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+}
+
+.homepage-logo-text {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+}
+
+.homepage-nav {
+  display: flex;
+  gap: 40px;
+}
+
+.homepage-nav-link {
+  text-decoration: none;
+  font-size: .95rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: color 0.2s;
+  color: #fff;
+  cursor: pointer;
+}
+
+.homepage-nav-link:hover {
+  color: #61dafb;
+}
+
+.homepage-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 64px 64px 0 64px;
+  min-height: 70vh;
+}
+
+.homepage-hero-text {
+  max-width: 600px;
+}
+
+.homepage-title {
+  margin-bottom: 28px;
+  line-height: 1.08;
+  letter-spacing: -1px;
+}
+
+.homepage-subtitle {
+  font-size: 1.5rem;
+  margin-bottom: 48px;
+  color: #c7d0e0;
+  font-weight: 400;
+  letter-spacing: 0.2px;
+}
+
+
+.homepage-get-started:hover {
+  background: linear-gradient(90deg, #185abc 0%, #2176ff 100%);
+  transform: translateY(-2px) scale(1.04);
+}
+
+.homepage-hero-image {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.homepage-hero-img {
+  width: 500px;
+  max-width: 100%;
+  height: auto;
+  border-radius: 28px;
+}
+
+@media (max-width: 1100px) {
+  .homepage-main {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 40px 16px 0 16px;
+  }
+  .homepage-hero-image {
+    justify-content: center;
+    margin-top: 40px;
+    width: 100%;
+  }
+  .homepage-hero-img {
+    width: 90vw;
+    max-width: 350px;
+  }
+  .homepage-header {
+    padding: 32px 16px 0 16px;
+  }
+} 
