@@ -9,7 +9,7 @@ button {
   font-weight: 700;
   padding: 12px 24px;
   border: none;
-  border-radius: 13px;
+  border-radius: 10px;
   cursor: pointer;
   transition: background 0.2s, transform 0.2s;
   letter-spacing: 0.5px;
@@ -17,7 +17,7 @@ button {
 
 .button-dark {
   box-shadow: 0 6px 32px rgba(33, 118, 255, 0.18);
-  background: linear-gradient(90deg, #2176ff 0%, #33aaff 100%);
+  background: linear-gradient(90deg, #2176ff 0%, #2176ff 100%);
   color: #fff;
 }
 
