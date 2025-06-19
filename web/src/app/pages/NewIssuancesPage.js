@@ -20,19 +20,19 @@ const NewIssuancesPage = () => (
             <td>Mortgage Loan<br /><span className="loan-desc">$250,000 – 20 years</span></td>
             <td>$1,000</td>
             <td>6.5%</td>
-            <td><button className="loan-submit">Buy</button></td>
+            <td><button className="btn btn-green-filled">Buy</button></td>
           </tr>
           <tr>
             <td>Auto Loan<br /><span className="loan-desc">$30,000 – 5 years</span></td>
             <td>$500</td>
             <td>7.2%</td>
-            <td><button className="loan-submit">Buy</button></td>
+            <td><button className="btn btn-green-filled">Buy</button></td>
           </tr>
           <tr>
             <td>Small Business Loan<br /><span className="loan-desc">$100,000 – 10 years</span></td>
             <td>$2,000</td>
             <td>8.0%</td>
-            <td><button className="loan-submit">Buy</button></td>
+            <td><button className="btn btn-green-filled">Buy</button></td>
           </tr>
         </tbody>
       </table>

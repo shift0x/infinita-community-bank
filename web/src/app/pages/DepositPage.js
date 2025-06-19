@@ -9,7 +9,7 @@ const DepositPage = () => (
       <label className="loan-label">Amount
         <input type="number" className="loan-input" placeholder="Enter amount in USDC" />
       </label>
-      <button type="submit" className="loan-submit">Deposit</button>
+      <button type="submit" className="btn btn-blue-filled">Deposit</button>
     </form>
   </div>
 );

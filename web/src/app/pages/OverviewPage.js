@@ -28,19 +28,19 @@ const OverviewPage = () => (
         <div className="overview-card-title">Total Balance</div>
         <div className="overview-balance">$12,500.00</div>
         <div className="overview-label">Across all accounts</div>
-        <button className="loan-submit overview-deposit-btn">Deposit</button>
+        <button className="btn btn-blue-filled overview-deposit-btn">Deposit</button>
       </div>
       <div className="overview-card">
         <div className="overview-card-title">Staked</div>
         <div className="overview-balance">$5,000.00</div>
         <div className="overview-label">Earning 15% APY</div>
-        <button className="loan-submit overview-stake-btn">Stake</button>
+        <button className="btn btn-blue-filled overview-stake-btn">Stake</button>
       </div>
       <div className="overview-card">
         <div className="overview-card-title">Loans Owned</div>
         <div className="overview-balance">$7,500.00</div>
         <div className="overview-label">3 active loans</div>
-        <button className="loan-submit overview-new-loan-btn">New Loan Application</button>
+        <button className="btn btn-blue-filled overview-new-loan-btn">New Loan Application</button>
       </div>
     </div>
     <div className="overview-section">
@@ -67,9 +67,9 @@ const OverviewPage = () => (
                 <td>{loan.paymentsRemaining}</td>
                 <td>{loan.due}</td>
                 <td className="overview-loan-actions">
-                  <button className="loan-submit overview-pay-btn">Make Payment</button>
+                  <button className="btn btn-blue-filled overview-pay-btn">Make Payment</button>
                   {!loan.withdrawn && (
-                    <button className="loan-submit overview-withdraw-btn">Withdraw</button>
+                    <button className="btn btn-green-filled overview-withdraw-btn">Withdraw</button>
                   )}
                 </td>
               </tr>
@@ -93,8 +93,8 @@ const OverviewPage = () => (
               <svg className="checkmark" width="18" height="18" viewBox="0 0 20 20"><circle cx="10" cy="10" r="9" fill="#eafaf1"/><path d="M6 10.5l3 3 5-5" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
               <svg className="xmark" width="18" height="18" viewBox="0 0 20 20"><circle cx="10" cy="10" r="9" fill="#fbeaea"/><path d="M7 7l6 6M13 7l-6 6" stroke="#ef4444" strokeWidth="2" strokeLinecap="round"/></svg>
             </span>
-            <button className="loan-buy-btn">Buy</button>
-            <button className="loan-sell-btn">Sell</button>
+            <button className="btn btn-green-filled loan-buy-btn">Buy</button>
+            <button className="btn btn-red-outline loan-sell-btn">Sell</button>
           </div>
         </li>
         <li>
@@ -109,8 +109,8 @@ const OverviewPage = () => (
               <svg className="checkmark" width="18" height="18" viewBox="0 0 20 20"><circle cx="10" cy="10" r="9" fill="#eafaf1"/><path d="M6 10.5l3 3 5-5" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
               <svg className="checkmark" width="18" height="18" viewBox="0 0 20 20"><circle cx="10" cy="10" r="9" fill="#eafaf1"/><path d="M6 10.5l3 3 5-5" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
             </span>
-            <button className="loan-buy-btn">Buy</button>
-            <button className="loan-sell-btn">Sell</button>
+            <button className="btn btn-green-filled loan-buy-btn">Buy</button>
+            <button className="btn btn-red-outline loan-sell-btn">Sell</button>
           </div>
         </li>
       </ul>

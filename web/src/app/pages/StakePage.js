@@ -18,7 +18,7 @@ const StakePage = () => (
         </div>
       </div>
       <div className="stake-card-right">
-        <button className="loan-submit stake-connect">Connect Wallet</button>
+        <button className="btn btn-blue-filled stake-connect">Connect Wallet</button>
         <div className="stake-purchase-label">Purchase with USDC</div>
       </div>
     </div>

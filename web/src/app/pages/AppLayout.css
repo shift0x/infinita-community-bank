@@ -669,4 +669,72 @@ body, .app-root {
 .dashboard-loan-sell-btn:hover {
   background: #ef4444;
   color: #fff;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.08rem;
+  font-weight: 700;
+  border-radius: 8px;
+  padding: 12px 28px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border 0.15s;
+  min-height: 44px;
+}
+
+/* Blue Buttons */
+.btn-blue-filled {
+  background: #185abc;
+  color: #fff;
+}
+.btn-blue-filled:hover {
+  background: #1a3fa6;
+}
+.btn-blue-outline {
+  background: #fff;
+  color: #185abc;
+  border: 1.5px solid #185abc;
+}
+.btn-blue-outline:hover {
+  background: #185abc;
+  color: #fff;
+}
+
+/* Green Buttons */
+.btn-green-filled {
+  background: #22c55e;
+  color: #fff;
+}
+.btn-green-filled:hover {
+  background: #16a34a;
+}
+.btn-green-outline {
+  background: #fff;
+  color: #22c55e;
+  border: 1.5px solid #22c55e;
+}
+.btn-green-outline:hover {
+  background: #22c55e;
+  color: #fff;
+}
+
+/* Red Buttons */
+.btn-red-filled {
+  background: #ef4444;
+  color: #fff;
+}
+.btn-red-filled:hover {
+  background: #b91c1c;
+}
+.btn-red-outline {
+  background: #fff;
+  color: #ef4444;
+  border: 1.5px solid #ef4444;
+}
+.btn-red-outline:hover {
+  background: #ef4444;
+  color: #fff;
 } 

@@ -21,8 +21,8 @@ const TradePage = () => (
             <td>$12,000</td>
             <td>6.2%</td>
             <td>
-              <button className="loan-submit">Buy</button>
-              <button className="loan-sell-btn">Sell</button>
+              <button className="btn btn-green-filled">Buy</button>
+              <button className="btn btn-red-outline">Sell</button>
             </td>
           </tr>
           <tr>
@@ -30,8 +30,8 @@ const TradePage = () => (
             <td>$4,500</td>
             <td>8.1%</td>
             <td>
-              <button className="loan-submit">Buy</button>
-              <button className="loan-sell-btn">Sell</button>
+              <button className="btn btn-green-filled">Buy</button>
+              <button className="btn btn-red-outline">Sell</button>
             </td>
           </tr>
           <tr>
@@ -39,8 +39,8 @@ const TradePage = () => (
             <td>$20,000</td>
             <td>5.7%</td>
             <td>
-              <button className="loan-submit">Buy</button>
-              <button className="loan-sell-btn">Sell</button>
+              <button className="btn btn-green-filled">Buy</button>
+              <button className="btn btn-red-outline">Sell</button>
             </td>
           </tr>
         </tbody>

@@ -15,11 +15,8 @@ const AppLayout = () => (
     </header>
     <div className="app-body">
       <aside className="app-sidebar">
-        <NavLink to="/app" className={({ isActive }) => "app-sidebar-btn" + (isActive ? " active" : "") } title="Overview">
+        <NavLink to="/app" end className={({ isActive }) => "app-sidebar-btn" + (isActive ? " active" : "") } title="Overview">
           <svg width="24" height="24" fill="none" viewBox="0 0 24 24"><path d="M3 12L12 5l9 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><path d="M5 10v9a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-4h2v4a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-        </NavLink>
-        <NavLink to="/app/borrow" className={({ isActive }) => "app-sidebar-btn" + (isActive ? " active" : "") } title="Borrow">
-          <svg width="24" height="24" fill="none" viewBox="0 0 24 24"><path d="M12 22a5 5 0 0 0 5-5V8a5 5 0 1 0-10 0v9a5 5 0 0 0 5 5z" stroke="currentColor" strokeWidth="2"/><path d="M12 2v2" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/><path d="M8 6l-1.5-1.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/><path d="M16 6l1.5-1.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
         </NavLink>
         <NavLink to="/app/trade" className={({ isActive }) => "app-sidebar-btn" + (isActive ? " active" : "") } title="Trade">
           <svg width="24" height="24" fill="none" viewBox="0 0 24 24"><path d="M7 10V6a2 2 0 0 1 2-2h8" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/><path d="M17 14v4a2 2 0 0 1-2 2H7" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/><path d="M17 10l4-4-4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><path d="M7 14l-4 4 4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
