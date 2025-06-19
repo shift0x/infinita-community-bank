@@ -4,10 +4,8 @@ import './index.css';
 import App from './app/App';
 import HomePage from './app/pages/HomePage';
 import AppLayout from './app/pages/AppLayout';
-import BorrowPage from './app/pages/BorrowPage';
+import OverviewPage from './app/pages/OverviewPage';
 import TradePage from './app/pages/TradePage';
-import StakePage from './app/pages/StakePage';
-import DepositPage from './app/pages/DepositPage';
 import NewIssuancesPage from './app/pages/NewIssuancesPage';
 
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
@@ -27,10 +25,8 @@ const router = createBrowserRouter([
         path: "/app",
         element: <AppLayout />,
         children: [
-          { path: "borrow", element: <BorrowPage /> },
+          { path: "", element: <OverviewPage /> },
           { path: "trade", element: <TradePage /> },
-          { path: "stake", element: <StakePage /> },
-          { path: "deposit", element: <DepositPage /> },
           { path: "issuances", element: <NewIssuancesPage /> }
         ]
       }

@@ -1,11 +1,12 @@
 import React from 'react';
+import './NewIssuancesPage.css';
 
 const NewIssuancesPage = () => (
-  <div className="dashboard-trade-content">
-    <h2 className="dashboard-loan-title">New Issuances</h2>
-    <p className="dashboard-loan-subtitle">Buy new loans directly from the bank at a fixed price and yield.</p>
-    <div className="dashboard-trade-table-card">
-      <table className="dashboard-trade-table">
+  <div className="trade-content">
+    <h2 className="loan-title">New Issuances</h2>
+    <p className="loan-subtitle">Buy new loans directly from the bank at a fixed price and yield.</p>
+    <div className="trade-table-card">
+      <table className="trade-table">
         <thead>
           <tr>
             <th>Loan</th>
@@ -16,22 +17,22 @@ const NewIssuancesPage = () => (
         </thead>
         <tbody>
           <tr>
-            <td>Mortgage Loan<br /><span className="dashboard-loan-desc">$250,000 – 20 years</span></td>
+            <td>Mortgage Loan<br /><span className="loan-desc">$250,000 – 20 years</span></td>
             <td>$1,000</td>
             <td>6.5%</td>
-            <td><button className="dashboard-loan-submit">Buy</button></td>
+            <td><button className="loan-submit">Buy</button></td>
           </tr>
           <tr>
-            <td>Auto Loan<br /><span className="dashboard-loan-desc">$30,000 – 5 years</span></td>
+            <td>Auto Loan<br /><span className="loan-desc">$30,000 – 5 years</span></td>
             <td>$500</td>
             <td>7.2%</td>
-            <td><button className="dashboard-loan-submit">Buy</button></td>
+            <td><button className="loan-submit">Buy</button></td>
           </tr>
           <tr>
-            <td>Small Business Loan<br /><span className="dashboard-loan-desc">$100,000 – 10 years</span></td>
+            <td>Small Business Loan<br /><span className="loan-desc">$100,000 – 10 years</span></td>
             <td>$2,000</td>
             <td>8.0%</td>
-            <td><button className="dashboard-loan-submit">Buy</button></td>
+            <td><button className="loan-submit">Buy</button></td>
           </tr>
         </tbody>
       </table>

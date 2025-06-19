@@ -1,0 +1,15 @@
+.deposit-content {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+.deposit-form {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 16px rgba(20, 40, 80, 0.08);
+  padding: 36px 40px 32px 40px;
+  margin-top: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+} 
