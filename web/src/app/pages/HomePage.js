@@ -1,5 +1,6 @@
 import React from 'react';
 import './HomePage.css';
+import { NavLink } from 'react-router-dom';
 
 const HomePage = () => {
   return (
@@ -11,7 +12,10 @@ const HomePage = () => {
             <span className="homepage-logo-text">Infinita Bank</span>
           </div>
           <nav className="homepage-nav">
-            <a href="#" className='homepage-nav-link'>Dashboard</a>
+            <NavLink to="/app" className='homepage-nav-link'>
+              Dashboard
+            </NavLink>
+            
           </nav>
         </div>
       </header>
@@ -19,7 +23,9 @@ const HomePage = () => {
         <section className="homepage-hero-text">
           <h1 className="homepage-title">Real World Loans for Infinita Citizens</h1>
           <p className="homepage-subtitle">Unlock capital for real world projects in infinita with lending powered by crypto</p>
-          <button className="button-dark">Get Started</button>
+          <NavLink to="/app" >
+            <button className='button-dark'>Get Started</button>
+          </NavLink>
         </section>
         <section className="homepage-hero-image">
           <img src="/crypto-bank.png" alt="Crypto Bank Hero" className="homepage-hero-img" />

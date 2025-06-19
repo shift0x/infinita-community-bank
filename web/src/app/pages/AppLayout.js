@@ -6,7 +6,9 @@ const AppLayout = () => (
   <div className="app-root">
     <header className="app-header">
       <div className="app-header-left">
-        <img src="/logo.png" alt="CryptoBank Logo" className="app-logo" />
+        <NavLink to="/">
+          <img src="/logo.png" alt="CryptoBank Logo" className="app-logo" />
+        </NavLink>
         <span className="app-title">Infinita Bank</span>
       </div>
       <div className="app-header-profile">
