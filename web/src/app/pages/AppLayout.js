@@ -1,7 +1,8 @@
 import React from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 import './AppLayout.css';
-import Web3WalletConnection from '../components/Web3WalletConnection';
+import '@rainbow-me/rainbowkit/styles.css';
 
 const AppLayout = () => (
   <div className="app-root">
@@ -13,7 +14,7 @@ const AppLayout = () => (
         <span className="app-title">Infinita Bank</span>
       </div>
       <div className="app-header-profile">
-        <Web3WalletConnection active={true} />
+        <ConnectButton />
       </div>
     </header>
     <div className="app-body">

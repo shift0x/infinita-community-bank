@@ -7,9 +7,29 @@ import AppLayout from './app/pages/AppLayout';
 import OverviewPage from './app/pages/OverviewPage';
 import TradePage from './app/pages/TradePage';
 import NewIssuancesPage from './app/pages/NewIssuancesPage';
-import { ThirdwebProvider } from "@thirdweb-dev/react";
-
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+
+import {
+  getDefaultConfig,
+  RainbowKitProvider,
+} from '@rainbow-me/rainbowkit';
+
+import {
+  QueryClientProvider,
+  QueryClient,
+} from "@tanstack/react-query";
+
+import { WagmiProvider } from 'wagmi';
+
+import {
+  baseSepolia
+} from 'wagmi/chains';
+
+const config = getDefaultConfig({
+  appName: 'Infinita Bank',
+  projectId: '254bbd81d790f1832819800b79cd23b2',
+  chains: [baseSepolia]
+});
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -35,10 +55,16 @@ const router = createBrowserRouter([
   },
 ]);
 
+const queryClient = new QueryClient();
+
 root.render(
   <React.StrictMode>
-    <ThirdwebProvider activeChain="arbitrum-sepolia" clientId="10b979e90e7b1522923fc2edcec0b719">
-      <RouterProvider router={router} />
-    </ThirdwebProvider>
+    <WagmiProvider config={config}>
+      <QueryClientProvider client={queryClient}>
+        <RainbowKitProvider>
+          <RouterProvider router={router} />
+        </RainbowKitProvider>
+      </QueryClientProvider>
+    </WagmiProvider>
   </React.StrictMode>
 );
