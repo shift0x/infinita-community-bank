@@ -7,6 +7,7 @@ import AppLayout from './app/pages/AppLayout';
 import OverviewPage from './app/pages/OverviewPage';
 import TradePage from './app/pages/TradePage';
 import NewIssuancesPage from './app/pages/NewIssuancesPage';
+import { ThirdwebProvider } from "@thirdweb-dev/react";
 
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
@@ -36,6 +37,8 @@ const router = createBrowserRouter([
 
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <ThirdwebProvider activeChain="arbitrum-sepolia" clientId="10b979e90e7b1522923fc2edcec0b719">
+      <RouterProvider router={router} />
+    </ThirdwebProvider>
   </React.StrictMode>
 );

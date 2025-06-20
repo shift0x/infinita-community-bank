@@ -1,6 +1,7 @@
 import React from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
 import './AppLayout.css';
+import Web3WalletConnection from '../components/Web3WalletConnection';
 
 const AppLayout = () => (
   <div className="app-root">
@@ -12,7 +13,7 @@ const AppLayout = () => (
         <span className="app-title">Infinita Bank</span>
       </div>
       <div className="app-header-profile">
-        <img src="/avatar.png" alt="User" className="app-avatar" />
+        <Web3WalletConnection active={true} />
       </div>
     </header>
     <div className="app-body">
