@@ -64,7 +64,7 @@ library LoanInfoLib {
         }
 
         // transfer back collateral to borrower
-        IERC20(repaymentToken).transferFrom(address(this), loan.borrower, loan.collateral);
+        IERC20(repaymentToken).transfer(loan.borrower, loan.collateral);
 
         // change the loan status to rejected and store the update
         loan.status = LoanStatus.Rejected;
@@ -110,7 +110,9 @@ library LoanInfoLib {
         bytes32 id = keccak256(abi.encode(block.timestamp, msg.sender, amount, details));
 
         // withdraw collateral from borrower
-        IERC20(borrowToken).transferFrom(msg.sender, address(this), collateral);
+        if(collateral > 0){
+            IERC20(borrowToken).transferFrom(msg.sender, address(this), collateral);
+        }
 
         // create the token representing the loan
         IMintableToken token = new MintableToken(address(this), "LOAN", string(abi.encodePacked(id)));

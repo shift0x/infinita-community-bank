@@ -130,6 +130,9 @@ contract LoanVault is ILoanVault {
         // the owner of all the tokens
         loan.token.mint(totalPaymentAmount, address(this));   
 
+        // transfer the loan amount to the borrower
+        IERC20(USDC).transfer(loan.borrower, loan.amount);
+
         // TODO: open new loan market
     }
 

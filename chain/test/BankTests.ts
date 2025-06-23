@@ -2,6 +2,8 @@ import {loadFixture} from "@nomicfoundation/hardhat-toolbox/network-helpers";
 import { expect } from "chai";
 import hre, { ethers } from "hardhat";
 import { BankVault, IERC20, MintableToken } from "../typechain-types";
+import { getState } from "./helpers/amounts";
+import { deposit, stake, unstake } from "./helpers/bank";
 
 describe ("Bank Tests", () => {
 
@@ -31,42 +33,6 @@ describe ("Bank Tests", () => {
         const bankAddress = await bank.getAddress();
         
         return { deployer, deployerAddress,bankAddress,loanVaultAddress, bank, bankToken, sBankToken, loanVault, usdc }
-    }
-
-
-    async function deposit(account: string , bank: BankVault, amount: string, usdc : MintableToken) {
-        const amountAsBig = ethers.parseEther(amount);
-        const bankAddress = await bank.getAddress();
-
-        await usdc.mint(amountAsBig, account);
-        await usdc.approve(bankAddress, amountAsBig);
-        await bank.deposit(amountAsBig);
-    }
-
-    async function stake(amount: string, bank: BankVault, bankToken: IERC20) {
-        const amountAsBig = ethers.parseEther(amount);
-        const bankAddress = await bank.getAddress();
-
-        await bankToken.approve(bankAddress, amountAsBig);
-        await bank.stake(amountAsBig);
-    }
-
-    async function unstake(amount: string, bank: BankVault) {
-        const amountAsBig = ethers.parseEther(amount);
-        
-        await bank.unstake(amountAsBig);
-    }
-
-    async function getState(account: string, bankToken: IERC20, sBankToken: IERC20, usdc : IERC20) {
-        const usdcBalance = await usdc.balanceOf(account);
-        const bankTokenBalance = await bankToken.balanceOf(account);
-        const sBankTokenBalance = await sBankToken.balanceOf(account);
-
-        return {
-            usdcBalance: Number(ethers.formatEther(usdcBalance)),
-            bankTokenBalance: Number(ethers.formatEther(bankTokenBalance)),
-            sBankTokenBalance: Number(ethers.formatEther(sBankTokenBalance)),
-        };
     }
 
     describe("Deposit", () => {
