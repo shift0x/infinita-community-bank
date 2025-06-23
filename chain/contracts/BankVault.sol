@@ -6,6 +6,7 @@ import {ILoanVault} from './interfaces/ILoanVault.sol';
 
 import {MintableToken} from './MintableToken.sol';
 import {LoanVault} from './LoanVault.sol';
+import {TokenHolderInfo} from './Types.sol';
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {Math} from "@openzeppelin/contracts/utils/math/Math.sol";
@@ -17,11 +18,6 @@ contract BankVault {
     IERC20 immutable public USDC;
 
     ILoanVault immutable public loanVault;
-
-    mapping(address => uint256) public stakedBalances;
-    mapping(address => bool) private _isStaked;
-    
-    address[] private _stakers;
 
     uint256 private _totalStake;
  
@@ -41,7 +37,7 @@ contract BankVault {
 
         BANK = new MintableToken(address(this), "Infinita Community Bank", "BANK");
         sBANK = new MintableToken(address(this), "Staked BANK", "sBANK");
-        loanVault = new LoanVault(address(this));
+        loanVault = new LoanVault(address(this), _usdc);
     }
 
     function deposit(uint256 amount) public {
@@ -84,21 +80,13 @@ contract BankVault {
         BANK.transferFrom(msg.sender, address(this), amount);
         sBANK.mint(amount, msg.sender);
 
-        // increment the staked balance
-        stakedBalances[msg.sender] += amount;
-
-        if(_isStaked[msg.sender] == false){
-            _isStaked[msg.sender] = true;
-            _stakers.push(msg.sender);
-        }
-
         // update the total staked amount
         _totalStake += amount;
     }
 
     function unstake(uint256 amount) public {
         // verify the caller has enough tokens stake to unstake
-        uint256 stakedAmount = stakedBalances[msg.sender];
+        uint256 stakedAmount = sBANK.balanceOf(msg.sender);
 
         if(stakedAmount < amount){
             revert InsufficentStakedBalanceForWithdrawl();
@@ -108,33 +96,27 @@ contract BankVault {
         // and transfer the original BANK token back to the user
         sBANK.burn(amount, msg.sender);
         BANK.transferFrom(address(this), msg.sender, amount); 
-
-        // update the staked balance for the msg.sender
-        stakedBalances[msg.sender] -= amount;
-
-        // update the total staked amount
-        _totalStake -= amount;
     }
 
-    // TODO: This method to staking distribution works for demo purposes, but would not be ideal
-    // in production since it doesn't account for transfers of sTokens
+    
     function distributeToStakers(address token, uint256 amount) public {
         // transfer the token amount into this contract
         IERC20(token).transferFrom(msg.sender, address(this), amount);
 
         // store variables as memory to avoid multiple state lookups
-        address[] memory stakers = _stakers;
-        uint256 count = stakers.length;
+        TokenHolderInfo[] memory stakers = sBANK.getTokenHolderInfo();
+        uint256 count = stakers.length; 
         uint256 totalStake = _totalStake;
 
         // for each staker, calculate their stake weight and send their
         // share of the specified token.
         for(uint256 i = 0; i < count; i++){
-            uint256 stakedAmount = stakedBalances[stakers[i]];
-            uint256 stakeWeight = Math.mulDiv(stakedAmount, 10**18, totalStake);
+            TokenHolderInfo memory info = stakers[i];
+
+            uint256 stakeWeight = Math.mulDiv(info.balance, 10**18, totalStake);
             uint256 tokenAmountToTransfer = Math.mulDiv(amount, stakeWeight, 10**18);
 
-            IERC20(token).transferFrom(address(this), stakers[i], tokenAmountToTransfer);
+            IERC20(token).transferFrom(address(this), info.account, tokenAmountToTransfer);
         }
     }
 
