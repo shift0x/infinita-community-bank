@@ -3,6 +3,7 @@ pragma solidity ^0.8.28;
 
 import {IMintableToken} from './interfaces/IMintableToken.sol';
 import {ILoanVault} from './interfaces/ILoanVault.sol';
+import {IBankVault} from './interfaces/IBankVault.sol';
 
 import {MintableToken} from './MintableToken.sol';
 import {LoanVault} from './LoanVault.sol';
@@ -11,14 +12,34 @@ import {TokenHolderInfo} from './Types.sol';
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {Math} from "@openzeppelin/contracts/utils/math/Math.sol";
 
-contract BankVault {
+/**
+ * @notice Contract representing the bank deposit vault
+ * @dev The bank operates by making loans on deposits. It maintains 20% of deposits for withdrawl
+ * and uses the remaining proceeds for making loans. As such only 20% of deposits are reedemable at
+ * any given point in time.
+ *
+ * When a deposit is made, the depositor receives BANK tokens which can be staked to receive a share
+ * of earnings from the bank.
+ *
+ * Earning Sources:
+ * 1. Interest on Loans
+ * 2. Profits from loan sales
+ */
+contract BankVault is IBankVault {
 
+    /// @notice mintable token representing bank deposits
     IMintableToken immutable public BANK;
+
+    /// @notice mintable token representing staked bank deposits
     IMintableToken immutable public sBANK;
+
+    /// @notice USDC token address
     IERC20 immutable public USDC;
 
+    /// @notice Loan vault used to manage loan process
     ILoanVault immutable public loanVault;
 
+    /// @notice total amount of tokens staked
     uint256 private _totalStake;
  
     /// @notice The bank currently does not have enough reserves to process the requested withdrawl
@@ -31,15 +52,21 @@ contract BankVault {
     error InsufficentTokenBalanceForStaking();
 
     constructor(
-        address _usdc
+        address _usdc,
+        address _loanOfficer
     ) {
         USDC = IERC20(_usdc);
 
         BANK = new MintableToken(address(this), "Infinita Community Bank", "BANK");
         sBANK = new MintableToken(address(this), "Staked BANK", "sBANK");
-        loanVault = new LoanVault(address(this), _usdc);
+        loanVault = new LoanVault(IBankVault(address(this)), _usdc, _loanOfficer);
     }
-
+ 
+    /**
+     * @notice Deposit funds into the bank
+     *
+     * @param amount The deposit amount
+     */
     function deposit(uint256 amount) public {
         // transfer user funds into the contract and mint new bank tokens
         // to send to the depositor
@@ -53,6 +80,13 @@ contract BankVault {
         USDC.transferFrom(address(this), address(loanVault), loanAmount);
     }
 
+    /**
+     * @notice Withdraw funds from the bank
+     * @dev This method throws an error if the bank does not have enough deposits to
+     * cover the deposit amount
+     *
+     * @param amount The withdraw amount
+     */
     function withdraw(uint256 amount) public {
         // get the funds available for withdrawl. If the vault does not have
         // enough funds to service the request, then raise an error
@@ -67,6 +101,12 @@ contract BankVault {
         USDC.transferFrom(address(this), msg.sender, amount);
     }
 
+    /**
+     * @notice Stake tokens with the bank to earn rewards
+     * @dev This method will mint sBANK tokens 1:1 with the deposit amount
+     *
+     * @param amount The staking amount
+     */
     function stake(uint256 amount) public {
         // verify the caller has enough BANK tokens for staking
         uint256 balance = BANK.balanceOf(msg.sender);
@@ -84,6 +124,12 @@ contract BankVault {
         _totalStake += amount;
     }
 
+    /**
+     * @notice unstake staked tokens
+     * @dev This method will burn sBANK tokens 1:1 with the withdraw amount
+     *
+     * @param amount The staking amount
+     */
     function unstake(uint256 amount) public {
         // verify the caller has enough tokens stake to unstake
         uint256 stakedAmount = sBANK.balanceOf(msg.sender);
@@ -99,7 +145,16 @@ contract BankVault {
     }
 
     
-    function distributeToStakers(address token, uint256 amount) public {
+    /**
+     * @notice Distribute staking rewards to stakers proportional to their stake weight
+     *
+     * @param token The reward token
+     * @param amount the reward amount to distribute
+     */
+    function distributeToStakers(
+        address token, 
+        uint256 amount
+    ) public {
         // transfer the token amount into this contract
         IERC20(token).transferFrom(msg.sender, address(this), amount);
 

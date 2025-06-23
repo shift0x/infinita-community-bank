@@ -2,19 +2,29 @@
 pragma solidity ^0.8.28;
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import {IMintableToken} from './interfaces/IMintableToken.sol';
-
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+
+import {IMintableToken} from './interfaces/IMintableToken.sol';
 import {TokenHolderInfo} from './Types.sol';
 
-
+/**
+ * @notice Contract representing a token with a mint/burn mechanism
+ * @dev The tokens can only be minted and burned by the speicified token miniter. This contract maintains a list
+ * of all token holders which can be accessed with the getTokenHolderInfo() view. This is specifically 
+ * useful for staking contracts where the stake weight for holders needs to be calculated in order to distribute rewards
+ */
 contract MintableToken is ERC20, IMintableToken {
 
+    /// @notice address of the token minter. Only this address will be allowed to mint/burn tokens
     address public minter;
 
+    /// @notice list of token holders
     address[] private _tokenHolders;
+
+    /// @notice mapping of addresses to a whether they are a known holder
     mapping(address => bool) private _knownHoldersLookup;
 
+    /// @notice modifier to protect functions that should only be called by the token minter
     modifier onlyTokenMinter(){
         require(msg.sender == minter, "unauthorized");
         _;
@@ -42,6 +52,12 @@ contract MintableToken is ERC20, IMintableToken {
         return super.transferFrom(from, to, value);
     }
 
+    /**
+     * @notice Mint the tokens to the specified address
+     *
+     * @param amount The requested token amount
+     * @param to The token owner
+     */
     function mint(
         uint256 amount,
         address to
@@ -49,6 +65,12 @@ contract MintableToken is ERC20, IMintableToken {
         transferFrom(address(0), to, amount);
     }
 
+    /**
+     * @notice Burn the tokens owned by the specified address
+     *
+     * @param amount The requested token amount
+     * @param owner The token owner
+     */
     function burn(
         uint256 amount,
         address owner
@@ -56,6 +78,9 @@ contract MintableToken is ERC20, IMintableToken {
         transferFrom(owner, address(0), amount);
     }
 
+    /**
+     * @notice Get the amount of tokens held by all token owners
+     */
     function getTokenHolderInfo() public view returns(TokenHolderInfo[] memory infos) {
         address[] memory holders = _tokenHolders;
 
@@ -71,9 +96,12 @@ contract MintableToken is ERC20, IMintableToken {
             });
         }
     }
-
     
-
+    /**
+     * @notice Add a new token holder if they do not currently exists
+     *
+     * @param holder The token holder to conditionally add
+     */
     function _registerTokenHolder(address holder) private {
         if(_knownHoldersLookup[holder] == true){ return; }
 
