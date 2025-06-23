@@ -77,7 +77,7 @@ contract BankVault is IBankVault {
         // calculate the deposited amount that should be used for lending and send it to the loan vault
         uint256 loanAmount = Math.mulDiv(amount, 80, 100);
         
-        USDC.transferFrom(address(this), address(loanVault), loanAmount);
+        USDC.transfer(address(loanVault), loanAmount);
     }
 
     /**
@@ -98,7 +98,7 @@ contract BankVault is IBankVault {
         // reduce supply of bank tokens by the withdrawl amount and transfer the users
         // the corresponding amount in USDC.
         BANK.burn(amount, msg.sender);
-        USDC.transferFrom(address(this), msg.sender, amount);
+        USDC.transfer(msg.sender, amount);
     }
 
     /**
@@ -141,7 +141,7 @@ contract BankVault is IBankVault {
         // burn the requested amount of staked tokens 
         // and transfer the original BANK token back to the user
         sBANK.burn(amount, msg.sender);
-        BANK.transferFrom(address(this), msg.sender, amount); 
+        BANK.transfer(msg.sender, amount); 
     }
 
     
@@ -171,7 +171,7 @@ contract BankVault is IBankVault {
             uint256 stakeWeight = Math.mulDiv(info.balance, 10**18, totalStake);
             uint256 tokenAmountToTransfer = Math.mulDiv(amount, stakeWeight, 10**18);
 
-            IERC20(token).transferFrom(address(this), info.account, tokenAmountToTransfer);
+            IERC20(token).transfer(info.account, tokenAmountToTransfer);
         }
     }
 

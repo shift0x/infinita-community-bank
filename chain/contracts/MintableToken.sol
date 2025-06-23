@@ -62,7 +62,8 @@ contract MintableToken is ERC20, IMintableToken {
         uint256 amount,
         address to
     ) public onlyTokenMinter {
-        transferFrom(address(0), to, amount);
+        _mint(to, amount);
+        _registerTokenHolder(to);
     }
 
     /**
@@ -75,7 +76,8 @@ contract MintableToken is ERC20, IMintableToken {
         uint256 amount,
         address owner
     ) public onlyTokenMinter {
-        transferFrom(owner, address(0), amount);
+        _burn(owner, amount);
+        _registerTokenHolder(owner);
     }
 
     /**
