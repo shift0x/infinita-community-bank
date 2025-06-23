@@ -1,7 +1,7 @@
 import {loadFixture} from "@nomicfoundation/hardhat-toolbox/network-helpers";
 import { expect } from "chai";
 import hre, { ethers } from "hardhat";
-import { BankVault, IERC20, LoanVault, MintableToken } from "../typechain-types";
+import { BankVault, IERC20, MintableToken } from "../typechain-types";
 
 describe ("Bank Tests", () => {
 
@@ -148,6 +148,30 @@ describe ("Bank Tests", () => {
 
             expect(depositorTokenBalances.usdcBalance).is.equal(stakingRewards);
             expect(depositorTokenBalances.sBankTokenBalance).is.equal(depositAmount);
+
+        })
+
+        it("should distribute partial staking rewards to stakers", async () => {
+            const { deployerAddress, bank, usdc, bankToken, sBankToken } = await loadFixture(setup);
+            const [deployer, otherAddress] = await hre.ethers.getSigners();
+            
+            const depositAmount = 100;
+            const transferAmount = 50;
+            const stakingRewards = 10;
+            const stakingRewardsBig = ethers.parseEther(stakingRewards.toString());
+            
+            await deposit(deployerAddress, bank, depositAmount.toString(), usdc);
+            await stake(depositAmount.toString(), bank, bankToken);
+
+            await sBankToken.transfer(otherAddress, ethers.parseEther(transferAmount.toString()))
+
+            await usdc.approve(bank, stakingRewardsBig);
+            await usdc.mint(stakingRewardsBig, deployerAddress);
+            await bank.distributeToStakers(usdc, stakingRewardsBig);
+
+            const depositorTokenBalances = await getState(deployerAddress, bankToken, sBankToken, usdc);
+
+            expect(depositorTokenBalances.usdcBalance).is.equal(stakingRewards * (1-(transferAmount/depositAmount)));
 
         })
 
