@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useAccount, useWriteContract, useChainId, useSwitchChain, useReadContract } from 'wagmi';
+import { useConnectModal } from '@rainbow-me/rainbowkit';
+import { bankContract, usdcContract } from '../lib/contracts'
 import './NewDepositModal.css';
+import { erc20Abi, formatEther, parseEther } from 'viem';
+import { chain, config } from '../lib/chain';
+import { readContract } from 'viem/actions';
+
 
 function formatCurrency(value) {
   // Remove all non-numeric except dot
@@ -25,6 +32,12 @@ function parseCurrency(formatted) {
 
 const NewDepositModal = ({ open, onClose, onSubmit }) => {
   const [amount, setAmount] = useState('');
+  const { address, isConnected } = useAccount();
+  const { openConnectModal } = useConnectModal();
+  const { writeContractAsync } = useWriteContract();
+  const { switchChainAsync } = useSwitchChain();
+
+  const chainId = useChainId();
 
   useEffect(() => {
     if (open) {
@@ -44,14 +57,81 @@ const NewDepositModal = ({ open, onClose, onSubmit }) => {
     setAmount(formatCurrency(raw));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const numericValue = parseCurrency(amount);
-    if (numericValue && !isNaN(Number(numericValue))) {
-      onSubmit(numericValue);
-      setAmount('');
+  const ensureConnectedToTargetChain = async () => {
+    if(chainId == chain.id){ return; }
+
+    try {
+      await switchChainAsync({ chainId: chain.id });
+    } catch (err) {
+      console.error('chain switch failed:', err);
+      
+      return;
     }
-  };
+  }
+
+  const ensureUSDCTokenApproval = async(spender, amount) => {
+
+    const client = config.getClient()
+    
+    const response = await readContract(client, {
+      address: usdcContract.addresses[chain.id],
+      abi: erc20Abi,
+      functionName: 'allowance',
+      args: [address, spender], 
+    });
+
+    const allowance = Number(formatEther(response));
+
+    if(allowance > amount){ return; }
+
+    const desiredAllowanceBig = parseEther(amount);
+
+    const tx = {
+      address: usdcContract.addresses[chain.id],
+      abi: erc20Abi,
+      functionName: 'approve',
+      args: [spender, desiredAllowanceBig]
+    }
+
+    try {
+      await writeContractAsync(tx);
+    } catch (err) {
+      return err;
+    }
+  }
+
+  const submitDeposit = async (e) => {
+    e.preventDefault();
+
+    const currencyAmount = parseCurrency(amount);
+    const currencyAmountBig = parseEther(currencyAmount.toString());
+
+    await ensureConnectedToTargetChain()
+
+    const err = await ensureUSDCTokenApproval(bankContract.addresses[chain.id], currencyAmount)
+
+    if(err != null){ 
+      alert(err);
+
+      return; 
+    }
+
+    const tx = {
+      abi : bankContract.abi,
+      address : bankContract.addresses[chain.id],
+      functionName: "deposit",
+      args: [ currencyAmountBig ]
+    }
+
+    try {
+      await writeContractAsync(tx);
+
+      setAmount('');
+      onSubmit();
+    } catch(err){
+      alert(err);
+    }
+  }
 
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -61,7 +141,7 @@ const NewDepositModal = ({ open, onClose, onSubmit }) => {
         <div className="modal-info-text">
           Your deposit will be used by Infinita Bank to make community loans. Withdrawals may be delayed if funds are currently in use for active loans.
         </div>
-        <form onSubmit={handleSubmit} className="modal-form">
+        <form onSubmit={submitDeposit} className="modal-form">
           <label className="modal-label" htmlFor="deposit-amount">Amount</label>
           <input
             id="deposit-amount"
@@ -76,8 +156,18 @@ const NewDepositModal = ({ open, onClose, onSubmit }) => {
             required
           />
           <div className="modal-helper-text">Enter the amount you wish to deposit (USDC)</div>
-          <button type="submit" className="btn btn-blue-filled modal-submit-btn">Deposit</button>
+
+          { 
+            isConnected ?
+              <button type="submit" className="btn btn-blue-filled modal-submit-btn">Deposit</button> : ''
+          }
+          
         </form>
+
+        {
+          !isConnected ?
+            <button className="btn btn-blue-outline modal-submit-btn" onClick={openConnectModal}>Connect Wallet</button> : ''
+        }
       </div>
     </div>
   );

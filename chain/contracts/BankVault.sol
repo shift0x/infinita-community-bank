@@ -143,7 +143,6 @@ contract BankVault is IBankVault {
         sBANK.burn(amount, msg.sender);
         BANK.transfer(msg.sender, amount); 
     }
-
     
     /**
      * @notice Distribute staking rewards to stakers proportional to their stake weight

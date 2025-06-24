@@ -243,3 +243,27 @@
 .overview-withdraw-btn:hover {
   background: #16a34a;
 }
+
+.overview-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.mint-test-usdc-link {
+  color: #185abc;
+  font-weight: 600;
+  text-decoration: none;
+  background: #eaf1fb;
+  padding: 10px 20px;
+  border-radius: 8px;
+  transition: background 0.15s, color 0.15s;
+  font-size: 1.05rem;
+  box-shadow: 0 1px 4px rgba(20, 40, 80, 0.06);
+}
+.mint-test-usdc-link:hover {
+  background: #185abc;
+  color: #fff;
+  text-decoration: none;
+}

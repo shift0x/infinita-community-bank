@@ -25,8 +25,12 @@ contract MintableToken is ERC20, IMintableToken {
     mapping(address => bool) private _knownHoldersLookup;
 
     /// @notice modifier to protect functions that should only be called by the token minter
+    /// @dev allows anyone to mint if the minter address is the dead address. Useful for test envs
     modifier onlyTokenMinter(){
-        require(msg.sender == minter, "unauthorized");
+        if(minter != address(0x0)){
+            require(msg.sender == minter, "unauthorized");
+        }
+
         _;
     }
 

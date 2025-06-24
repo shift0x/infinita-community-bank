@@ -1,6 +1,11 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import './OverviewPage.css';
 import NewDepositModal from '../features/NewDepositModal';
+import { mintableTokenABI, tokens, usdcContract } from '../lib/contracts';
+import { chain, config } from '../lib/chain';
+import { formatEther, parseEther } from 'viem';
+import { useWriteContract, useAccount } from 'wagmi';
+import { readContract } from 'viem/actions';
 
 const outstandingLoans = [
   {
@@ -9,7 +14,6 @@ const outstandingLoans = [
     due: '$1,200 due',
     interest: '6.2%',
     paymentsRemaining: 24,
-    withdrawn: false,
   },
   {
     name: 'Auto Loan',
@@ -17,34 +21,79 @@ const outstandingLoans = [
     due: '$350 due',
     interest: '7.1%',
     paymentsRemaining: 8,
-    withdrawn: true,
   },
 ];
 
 const OverviewPage = () => {
   const [depositOpen, setDepositOpen] = useState(false);
+  const { writeContract } = useWriteContract();
+  const { address, isConnected } = useAccount();
 
-  const handleDepositSubmit = (amount) => {
-    // You can handle the deposit logic here
-    // For now, just close the modal
+  const closeModal = () => {
     setDepositOpen(false);
-    // Optionally: console.log('Deposit:', amount);
   };
+
+  const mintUSDC = () => {
+    const amount = 100000
+    const amountBig = parseEther(amount.toString())
+
+    const tx = {
+      address: usdcContract.addresses[chain.id],
+      abi: mintableTokenABI,
+      functionName: 'mint',
+      args: [ amountBig, address ]
+    }
+
+    try {
+      writeContract(tx);
+    } catch (err) {
+      alert(err);
+      return err;
+    }
+  }
+
+  const getUserTokenBalance = async (token) => {
+    const client = config.getClient()
+        
+    const response = await readContract(client, {
+      address: token,
+      abi: erc20Abi,
+      functionName: 'balanceOf',
+      args: [address], 
+    });
+
+    const balance = Number(formatEther(response));
+
+    return balance;
+  }
+
+  const getUserBalances = async () => {
+    const bankTokenBalance = await getUserTokenBalance(tokens[config.id].BANK);
+    const sBankTokenBalance = await getUserTokenBalance(tokens[config.id].sBANK);
+
+    console.log({
+      bankTokenBalance,
+      sBankTokenBalance
+    })
+  }
 
   return (
     <div className="overview-content">
-      <h2 className="loan-title">Account Overview</h2>
+      <div className="overview-header-row">
+        <h2 className="loan-title">Account Overview</h2>
+        <button className="btn mint-test-usdc-link" onClick={mintUSDC}>Mint 100,000 Test USDC</button>
+      </div>
       <div className="overview-cards">
         <div className="overview-card">
           <div className="overview-card-title">Total Balance</div>
           <div className="overview-balance">$12,500.00</div>
-          <div className="overview-label">Across all accounts</div>
+          <div className="overview-label">BANK</div>
           <button className="btn btn-blue-filled overview-deposit-btn" onClick={() => setDepositOpen(true)}>Deposit</button>
         </div>
         <div className="overview-card">
           <div className="overview-card-title">Staked</div>
           <div className="overview-balance">$5,000.00</div>
-          <div className="overview-label">Earning 15% APY</div>
+          <div className="overview-label">sBANK</div>
           <button className="btn btn-blue-filled overview-stake-btn">Stake</button>
         </div>
         <div className="overview-card">
@@ -54,7 +103,7 @@ const OverviewPage = () => {
           <button className="btn btn-blue-filled overview-new-loan-btn">New Loan Application</button>
         </div>
       </div>
-      <NewDepositModal open={depositOpen} onClose={() => setDepositOpen(false)} onSubmit={handleDepositSubmit} />
+      <NewDepositModal open={depositOpen} onClose={() => closeModal()} onSubmit={closeModal} />
       <div className="overview-section">
         <div className="overview-section-title">Outstanding Loans</div>
         <div className="overview-loans-table-card">
@@ -80,9 +129,6 @@ const OverviewPage = () => {
                   <td>{loan.due}</td>
                   <td className="overview-loan-actions">
                     <button className="btn btn-blue-filled overview-pay-btn">Make Payment</button>
-                    {!loan.withdrawn && (
-                      <button className="btn btn-green-filled overview-withdraw-btn">Withdraw</button>
-                    )}
                   </td>
                 </tr>
               ))}

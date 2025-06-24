@@ -10,7 +10,7 @@ button {
   padding: 12px 24px;
   border: none;
   border-radius: 10px;
-  cursor: pointer;
+  cursor: pointer !important;
   transition: background 0.2s, transform 0.2s;
   letter-spacing: 0.5px;
 }
