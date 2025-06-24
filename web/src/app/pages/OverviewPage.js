@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import './OverviewPage.css';
 import NewDepositModal from '../features/NewDepositModal';
+import StakeModal from '../features/StakeModal';
 import { mintableTokenABI, usdcContract } from '../lib/contracts';
 import { chain } from '../lib/chain';
 import { parseEther } from 'viem';
@@ -26,13 +27,17 @@ const outstandingLoans = [
 
 const OverviewPage = () => {
   const [depositOpen, setDepositOpen] = useState(false);
+  const [stakeOpen, setStakeOpen] = useState(false);
   const { writeContract } = useWriteContract();
   const { address } = useAccount();
   const { balances, isLoading, updateBalances } = useUserState();
 
   const closeModal = () => {
     setDepositOpen(false);
-    updateBalances();
+  };
+
+  const closeStakeModal = () => {
+    setStakeOpen(false);
   };
 
   const mintUSDC = async () => {
@@ -77,7 +82,7 @@ const OverviewPage = () => {
             {isLoading ? '...' : `$${balances.sBank.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
           </div>
           <div className="overview-label">sBANK</div>
-          <button className="btn btn-blue-filled overview-stake-btn">Stake</button>
+          <button className="btn btn-blue-filled overview-stake-btn" onClick={() => setStakeOpen(true)}>Stake</button>
         </div>
         <div className="overview-card">
           <div className="overview-card-title">Loans Owned</div>
@@ -87,6 +92,7 @@ const OverviewPage = () => {
         </div>
       </div>
       <NewDepositModal open={depositOpen} onClose={() => closeModal()} onSubmit={closeModal} />
+      <StakeModal open={stakeOpen} onClose={() => closeStakeModal()} onSubmit={closeStakeModal} />
       <div className="overview-section">
         <div className="overview-section-title">Outstanding Loans</div>
         <div className="overview-loans-table-card">

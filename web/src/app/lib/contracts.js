@@ -972,7 +972,7 @@ export const  tokens = {
   84532: {
     USDC: "0x861C552fFDD44c0953cc07F672d4c7CC7CdFF68a",
     BANK: "0xaC4551225f03203e9f88bDBc43121d83D0Bd7cDd",
-    sBANK: ""
+    sBANK: "0x0acb56842D28d177590044f9BA0Af1A05db3bDA8"
   }
 }
 

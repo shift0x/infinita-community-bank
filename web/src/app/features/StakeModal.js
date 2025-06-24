@@ -1,16 +1,16 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAccount, useWriteContract } from 'wagmi';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
-import { bankContract, usdcContract } from '../lib/contracts'
+import { bankContract, tokens } from '../lib/contracts'
 import { parseCurrency } from '../lib/currency';
 import { ensureTokenApproval } from '../lib/tokenUtils';
 import CurrencyInput from '../components/CurrencyInput';
-import './NewDepositModal.css';
+import './NewDepositModal.css'; // Reusing the same styles
 import { parseEther } from 'viem';
 import { chain } from '../lib/chain';
 import { useUserState } from '../providers/UserStateProvider';
 
-const NewDepositModal = ({ open, onClose, onSubmit }) => {
+const StakeModal = ({ open, onClose, onSubmit }) => {
   const [amount, setAmount] = useState('');
   const { address, isConnected } = useAccount();
   const { openConnectModal } = useConnectModal();
@@ -34,34 +34,40 @@ const NewDepositModal = ({ open, onClose, onSubmit }) => {
     setAmount(formattedValue);
   };
 
-  
-
-  const submitDeposit = async (e) => {
+  const submitStake = async (e) => {
     e.preventDefault();
 
     const currencyAmount = parseCurrency(amount);
     const currencyAmountBig = parseEther(currencyAmount.toString());
 
+    // Check if user has enough BANK tokens
+    const amountNumber = Number(currencyAmount);
+    if (amountNumber > balances.bank) {
+      alert('Insufficient BANK token balance');
+      return;
+    }
+
+
+    // Ensure BANK token approval for staking
     const err = await ensureTokenApproval({
-      tokenAddress: usdcContract.addresses[chain.id],
+      tokenAddress: tokens[chain.id].BANK, // BANK token address
       ownerAddress: address,
-      spenderAddress: bankContract.addresses[chain.id],
+      spenderAddress: bankContract.addresses[chain.id], // Bank contract for staking
       amount: currencyAmount,
       writeContractAsync
-    })
+    });
 
-    if(err != null){ 
+    if (err != null) { 
       alert(err);
-
       return; 
     }
 
     const tx = {
-      abi : bankContract.abi,
-      address : bankContract.addresses[chain.id],
-      functionName: "deposit",
-      args: [ currencyAmountBig ]
-    }
+      abi: bankContract.abi,
+      address: bankContract.addresses[chain.id],
+      functionName: "stake",
+      args: [currencyAmountBig]
+    };
 
     try {
       await writeContractAsync(tx);
@@ -70,33 +76,33 @@ const NewDepositModal = ({ open, onClose, onSubmit }) => {
 
       setAmount('');
       onSubmit();
-    } catch(err){
+    } catch (err) {
       alert(err);
     }
-  }
+  };
 
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-box" onClick={e => e.stopPropagation()}>
         <button className="modal-close-btn" onClick={onClose} aria-label="Close">&times;</button>
-        <h2 className="modal-title">Deposit Funds</h2>
+        <h2 className="modal-title">Stake BANK Tokens</h2>
         <div className="modal-info-text">
-          Your deposit will be used by Infinita Bank to make community loans. Withdrawals may be delayed if funds are currently in use for active loans.
+          Stake your BANK tokens and receive a share of bank profits. Your staked tokens will help support the community lending ecosystem.
         </div>
-        <form onSubmit={submitDeposit} className="modal-form">
+        <form onSubmit={submitStake} className="modal-form">
           <CurrencyInput
-            id="deposit-amount"
-            label='Amount'
-            availableBalance={balances.usdc}
+            id="stake-amount"
+            label="Amount"
             value={amount}
+            availableBalance={balances.bank}
             onChange={handleAmountChange}
-            helperText="Enter the amount you wish to deposit (USDC)"
+            helperText={`Enter the amount you wish to stake`}
             required
           />
 
           { 
             isConnected ?
-              <button type="submit" className="btn btn-blue-filled modal-submit-btn">Deposit</button> : ''
+              <button type="submit" className="btn btn-blue-filled modal-submit-btn">Stake</button> : ''
           }
           
         </form>
@@ -110,4 +116,4 @@ const NewDepositModal = ({ open, onClose, onSubmit }) => {
   );
 };
 
-export default NewDepositModal; 
+export default StakeModal;
