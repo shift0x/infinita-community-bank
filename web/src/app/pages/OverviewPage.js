@@ -1,11 +1,11 @@
-import React, { useMemo, useState } from 'react';
+import { useState } from 'react';
 import './OverviewPage.css';
 import NewDepositModal from '../features/NewDepositModal';
-import { mintableTokenABI, tokens, usdcContract } from '../lib/contracts';
-import { chain, config } from '../lib/chain';
-import { formatEther, parseEther } from 'viem';
+import { mintableTokenABI, usdcContract } from '../lib/contracts';
+import { chain } from '../lib/chain';
+import { parseEther } from 'viem';
 import { useWriteContract, useAccount } from 'wagmi';
-import { readContract } from 'viem/actions';
+import { useUserState } from '../providers/UserStateProvider';
 
 const outstandingLoans = [
   {
@@ -27,13 +27,15 @@ const outstandingLoans = [
 const OverviewPage = () => {
   const [depositOpen, setDepositOpen] = useState(false);
   const { writeContract } = useWriteContract();
-  const { address, isConnected } = useAccount();
+  const { address } = useAccount();
+  const { balances, isLoading, updateBalances } = useUserState();
 
   const closeModal = () => {
     setDepositOpen(false);
+    updateBalances();
   };
 
-  const mintUSDC = () => {
+  const mintUSDC = async () => {
     const amount = 100000
     const amountBig = parseEther(amount.toString())
 
@@ -46,35 +48,12 @@ const OverviewPage = () => {
 
     try {
       writeContract(tx);
+
+      setTimeout(() => updateBalances(), 2000);
     } catch (err) {
       alert(err);
       return err;
     }
-  }
-
-  const getUserTokenBalance = async (token) => {
-    const client = config.getClient()
-        
-    const response = await readContract(client, {
-      address: token,
-      abi: erc20Abi,
-      functionName: 'balanceOf',
-      args: [address], 
-    });
-
-    const balance = Number(formatEther(response));
-
-    return balance;
-  }
-
-  const getUserBalances = async () => {
-    const bankTokenBalance = await getUserTokenBalance(tokens[config.id].BANK);
-    const sBankTokenBalance = await getUserTokenBalance(tokens[config.id].sBANK);
-
-    console.log({
-      bankTokenBalance,
-      sBankTokenBalance
-    })
   }
 
   return (
@@ -86,13 +65,17 @@ const OverviewPage = () => {
       <div className="overview-cards">
         <div className="overview-card">
           <div className="overview-card-title">Total Balance</div>
-          <div className="overview-balance">$12,500.00</div>
+          <div className="overview-balance">
+            {isLoading ? '...' : `$${balances.bank.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+          </div>
           <div className="overview-label">BANK</div>
           <button className="btn btn-blue-filled overview-deposit-btn" onClick={() => setDepositOpen(true)}>Deposit</button>
         </div>
         <div className="overview-card">
           <div className="overview-card-title">Staked</div>
-          <div className="overview-balance">$5,000.00</div>
+          <div className="overview-balance">
+            {isLoading ? '...' : `$${balances.sBank.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+          </div>
           <div className="overview-label">sBANK</div>
           <button className="btn btn-blue-filled overview-stake-btn">Stake</button>
         </div>

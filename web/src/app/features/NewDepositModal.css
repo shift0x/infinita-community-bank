@@ -86,6 +86,21 @@
   margin-bottom: 2px;
 }
 
+.currency-input-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.currency-input-container .modal-label {
+  margin-bottom: 8px;
+}
+
+.currency-input-container .modal-input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
 .modal-submit-btn {
   margin-top: 20px;
   width: 100%;
