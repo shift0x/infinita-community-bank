@@ -7,7 +7,7 @@ The goal of this project is to introduce a novel way to provide funding (using b
 ## Background
 The current crypto ecosystem is very familiar with over collateralized loans (i.e aave), however a real implementation of real world under collateralized loans are still lacking. These loans are what is needed to bring the lending ecosystem to equality with the traditional banking system. To accomplish this goal, we need a bank that exists in both worlds (online and offline).
 
-**Online:**** Use defi to raise funds, pay yield and offer trading to token holders
+**Online:** Use defi to raise funds, pay yield and offer trading to token holders
 
 **Offline:** The registered bank entity takes 1st position liens on assets purchased with loans (property, equipment). If the loan defaults, then the bank will foreclose and use the proceeds to pay loan holders on-chain.
 
