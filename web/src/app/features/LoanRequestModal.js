@@ -136,7 +136,7 @@ const LoanRequestModal = ({ open, onClose, onSubmit }) => {
     try {
       await writeContractAsync(tx);
 
-      setTimeout(() => { updateBalances(); }, 2000);
+      setTimeout(() => { updateBalances(); }, 5000);
 
       onSubmit();
     } catch (err) {

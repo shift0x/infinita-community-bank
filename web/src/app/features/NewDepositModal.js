@@ -66,7 +66,7 @@ const NewDepositModal = ({ open, onClose, onSubmit }) => {
     try {
       await writeContractAsync(tx);
 
-      setTimeout(() => { updateBalances(); }, 2000);
+      setTimeout(() => { updateBalances(); }, 5000);
 
       setAmount('');
       onSubmit();
