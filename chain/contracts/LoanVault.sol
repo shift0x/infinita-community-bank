@@ -54,9 +54,13 @@ contract LoanVault is ILoanVault {
      */
     mapping(address => bytes32[]) loansByBorrower;
 
-    /// @dev Only loan officers are permitted to approve and reject loans
+    /// @notice Only loan officers are permitted to approve and reject loans
+    /// @dev If the loan officer is the dead address, then allow loan approvals from any address for testing
     modifier onlyLoanOfficer(){
-        require(msg.sender == LoanOfficer, "unauthorized");
+        if(LoanOfficer != address(0x0)){
+            require(msg.sender == LoanOfficer, "unauthorized");
+        }
+        
         _;
     }
 
@@ -125,6 +129,18 @@ contract LoanVault is ILoanVault {
 
         // Add the loan to the users list of loans 
         loansByBorrower[msg.sender].push(loan.id);
+
+        // If the loan officer is the dead address, then we should auto-approve loans for testing
+        if(LoanOfficer == address(0x0)){
+            // determine a fictional interest rate based on the amount of collateral used to take out the loan
+            uint256 baseInterestRate = 7*(10**16);
+            uint256 maxInterestRatePremium = 5*(10**16);
+            uint256 collateralPercentage = Math.mulDiv(collateral, 10**18, amount);
+            uint256 interestRateAdjustment = Math.mulDiv(maxInterestRatePremium, collateralPercentage, 10**18);
+            uint256 interestRate = baseInterestRate + interestRateAdjustment;
+
+            finalizeLoanTerms(loan.id, interestRate, amount*2);
+        }
 
         return loan.id;
     }

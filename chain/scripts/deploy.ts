@@ -11,15 +11,21 @@ async function deploy(){
     await usdc.waitForDeployment();
 
     const bankContract = await hre.ethers.getContractFactory("BankVault");
-    const bank = await bankContract.deploy(usdc, deployer);
+    const bank = await bankContract.deploy(usdc, DEAD_ADDRESS);
 
     await bank.waitForDeployment();
 
     const bankAddress = await bank.getAddress();
     const usdcAddress = await usdc.getAddress();
+    const loanVaultAddress = await bank.loanVault();
+    const bankTokenAddress = await bank.BANK();
+    const sBankTokenAddress = await bank.sBANK();
 
-    console.log(`deployed usdc test token: ${usdcAddress}`);
-    console.log(`deployed bank contract: ${bankAddress}`);
+    console.log(`usdc: ${usdcAddress}`);
+    console.log(`bank: ${bankAddress}`);
+    console.log(`loan vault: ${loanVaultAddress}`);
+    console.log(`bank token: ${bankTokenAddress}`);
+    console.log(`sBank token: ${sBankTokenAddress}`);
 }
 
 deploy().then(() => { process.exit(); })
