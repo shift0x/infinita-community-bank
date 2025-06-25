@@ -21,9 +21,6 @@ The current crypto ecosystem is very familiar with over collateralized loans (i.
 
 2. **Install dependencies**
    ```bash
-   # Install root dependencies
-   npm install
-   
    # Install smart contract dependencies
    cd chain
    npm install
@@ -35,13 +32,10 @@ The current crypto ecosystem is very familiar with over collateralized loans (i.
 
 ### Smart Contract Setup
 
-1. **Configure environment**
+1. **Configure harthat wallets**
    ```bash
-   cd chain
-   cp .env.example .env
-   # Add your deployer private key and RPC URLs
+   npx hardhat vars set SMART_CONTRACT_DEPLOYER
    ```
-
 2. **Compile contracts**
    ```bash
    npx hardhat compile
@@ -58,22 +52,15 @@ The current crypto ecosystem is very familiar with over collateralized loans (i.
    npx hardhat node
    
    # In another terminal, deploy contracts
-   npx hardhat run scripts/deploy.js --network localhost
+   npx hardhat run scripts/deploy.js 
    ```
 
 ### Web Application Setup
 
-1. **Configure environment**
-   ```bash
-   cd web
-   cp .env.example .env.local
-   # Add your WalletConnect project ID and contract addresses
-   ```
-
-2. **Start development server**
+1. **Start development server**
    ```bash
    npm start
    ```
 
-3. **Open application**
+2. **Open application**
    Navigate to `http://localhost:3000`
