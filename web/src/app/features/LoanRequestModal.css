@@ -1,0 +1,46 @@
+/* Additional styles for LoanRequestModal */
+
+.loan-request-modal {
+  max-width: 600px;
+  min-width: 450px;
+}
+
+.modal-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  padding-right: 40px;
+  cursor: pointer;
+}
+
+.modal-select:focus {
+  outline: none;
+}
+
+.modal-textarea {
+  resize: vertical;
+  min-height: 100px;
+  font-family: inherit;
+  line-height: 1.5;
+}
+
+.modal-textarea::placeholder {
+  color: #9ca3af;
+  font-size: 0.95rem;
+}
+
+/* Ensure consistent spacing for all input containers */
+.currency-input-container + .currency-input-container {
+  margin-top: 20px;
+}
+
+/* Override for loan request modal to have more spacing */
+.loan-request-modal .currency-input-container + .currency-input-container {
+  margin-top: 24px;
+}
+
+.loan-request-modal .modal-submit-btn {
+  margin-top: 28px;
+}

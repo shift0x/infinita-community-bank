@@ -38,6 +38,9 @@ contract LoanVault is ILoanVault {
     /// @notice the loan officer responsible for approving or rejecting loans
     address immutable public LoanOfficer;
 
+    /// @notice a list of all loans. Useful for returning all loans hosted by the platform
+    bytes32[] private _allLoans;
+
     /**
      * @notice Mapping between loan id and the corresponding loan
      * @dev mapping(id => LoanInfo)
@@ -61,6 +64,24 @@ contract LoanVault is ILoanVault {
         VAULT = _vault;
         USDC = _usdc;
         LoanOfficer = _loanOfficer;
+    }
+
+    /**
+     * @notice Get all the loans available on the platform
+     */
+    function getAllLoans() public view returns (LoanInfo[] memory loans) {
+        // get all the loan ids into memory
+        bytes32[] memory ids = _allLoans;
+
+        // initalize the loan info collection
+        loans = new LoanInfo[](ids.length);
+
+        // populate loan infos
+        for(uint256 i = 0; i < loans.length; i++){
+            loans[i] = loanInfos[ids[i]];
+        }
+
+        return loans;
     }
 
     /**

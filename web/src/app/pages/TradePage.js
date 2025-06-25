@@ -3,7 +3,7 @@ import './TradePage.css';
 
 const TradePage = () => (
   <div className="trade-content">
-    <h2 className="loan-title">Buy & Sell Loans</h2>
+    <h2 className="loan-title">Buy & Sell Loans (Coming Soon...)</h2>
     <p className="loan-subtitle">Trade fractionalized loans issued by the bank.</p>
     <div className="trade-table-card">
       <table className="trade-table">

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import './OverviewPage.css';
 import NewDepositModal from '../features/NewDepositModal';
 import StakeModal from '../features/StakeModal';
+import LoanRequestModal from '../features/LoanRequestModal';
 import { mintableTokenABI, usdcContract } from '../lib/contracts';
 import { chain } from '../lib/chain';
 import { parseEther } from 'viem';
@@ -28,6 +29,7 @@ const outstandingLoans = [
 const OverviewPage = () => {
   const [depositOpen, setDepositOpen] = useState(false);
   const [stakeOpen, setStakeOpen] = useState(false);
+  const [loanRequestOpen, setLoanRequestOpen] = useState(false);
   const { writeContract } = useWriteContract();
   const { address } = useAccount();
   const { balances, isLoading, updateBalances } = useUserState();
@@ -38,6 +40,16 @@ const OverviewPage = () => {
 
   const closeStakeModal = () => {
     setStakeOpen(false);
+  };
+
+  const closeLoanRequestModal = () => {
+    setLoanRequestOpen(false);
+  };
+
+  const handleLoanSubmit = (loanRequest) => {
+    console.log('Loan request submitted:', loanRequest);
+    // TODO: Handle loan submission logic here
+    closeLoanRequestModal();
   };
 
   const mintUSDC = async () => {
@@ -88,11 +100,12 @@ const OverviewPage = () => {
           <div className="overview-card-title">Loans Owned</div>
           <div className="overview-balance">$7,500.00</div>
           <div className="overview-label">3 active loans</div>
-          <button className="btn btn-blue-filled overview-new-loan-btn">New Loan Application</button>
+          <button className="btn btn-blue-filled overview-new-loan-btn" onClick={() => setLoanRequestOpen(true)}>New Loan Application</button>
         </div>
       </div>
       <NewDepositModal open={depositOpen} onClose={() => closeModal()} onSubmit={closeModal} />
       <StakeModal open={stakeOpen} onClose={() => closeStakeModal()} onSubmit={closeStakeModal} />
+      <LoanRequestModal open={loanRequestOpen} onClose={() => closeLoanRequestModal()} onSubmit={handleLoanSubmit} />
       <div className="overview-section">
         <div className="overview-section-title">Outstanding Loans</div>
         <div className="overview-loans-table-card">

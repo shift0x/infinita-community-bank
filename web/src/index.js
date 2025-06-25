@@ -6,13 +6,9 @@ import HomePage from './app/pages/HomePage';
 import AppLayout from './app/pages/AppLayout';
 import OverviewPage from './app/pages/OverviewPage';
 import TradePage from './app/pages/TradePage';
-import NewIssuancesPage from './app/pages/NewIssuancesPage';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
-import {
-  getDefaultConfig,
-  RainbowKitProvider,
-} from '@rainbow-me/rainbowkit';
+import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
 
 import {
   QueryClientProvider,
@@ -39,8 +35,7 @@ const router = createBrowserRouter([
         element: <AppLayout />,
         children: [
           { path: "", element: <OverviewPage /> },
-          { path: "trade", element: <TradePage /> },
-          { path: "issuances", element: <NewIssuancesPage /> }
+          { path: "trade", element: <TradePage /> }
         ]
       }
     ]
