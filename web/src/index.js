@@ -6,6 +6,7 @@ import HomePage from './app/pages/HomePage';
 import AppLayout from './app/pages/AppLayout';
 import OverviewPage from './app/pages/OverviewPage';
 import TradePage from './app/pages/TradePage';
+import VotingPage from './app/pages/VotingPage';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
@@ -35,7 +36,8 @@ const router = createBrowserRouter([
         element: <AppLayout />,
         children: [
           { path: "", element: <OverviewPage /> },
-          { path: "trade", element: <TradePage /> }
+          { path: "trade", element: <TradePage /> },
+          { path: "voting", element: <VotingPage /> }
         ]
       }
     ]
