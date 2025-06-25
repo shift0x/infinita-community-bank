@@ -3,6 +3,7 @@ import './OverviewPage.css';
 import NewDepositModal from '../features/NewDepositModal';
 import StakeModal from '../features/StakeModal';
 import LoanRequestModal from '../features/LoanRequestModal';
+import LoanPaymentModal from '../features/LoanPaymentModal';
 import { mintableTokenABI, usdcContract } from '../lib/contracts';
 import { chain } from '../lib/chain';
 import { parseEther } from 'viem';
@@ -15,6 +16,8 @@ const OverviewPage = () => {
   const [depositOpen, setDepositOpen] = useState(false);
   const [stakeOpen, setStakeOpen] = useState(false);
   const [loanRequestOpen, setLoanRequestOpen] = useState(false);
+  const [loanPaymentOpen, setLoanPaymentOpen] = useState(false);
+  const [selectedLoan, setSelectedLoan] = useState(null);
   const [outstandingLoans, setOutstandingLoans] = useState([]);
   const { writeContract } = useWriteContract();
   const { address } = useAccount();
@@ -36,6 +39,23 @@ const OverviewPage = () => {
     console.log('Loan request submitted:', loanRequest);
     // TODO: Handle loan submission logic here
     closeLoanRequestModal();
+  };
+
+  const openLoanPayment = (loan) => {
+    setSelectedLoan(loan);
+    setLoanPaymentOpen(true);
+  };
+
+  const closeLoanPaymentModal = () => {
+    setLoanPaymentOpen(false);
+    setSelectedLoan(null);
+  };
+
+  const handleLoanPaymentSubmit = (paymentData) => {
+    console.log('Loan payment submitted:', paymentData);
+    // TODO: Handle loan payment logic here
+    closeLoanPaymentModal();
+    updateBalances();
   };
 
   useEffect(() => {
@@ -103,6 +123,12 @@ const OverviewPage = () => {
       <NewDepositModal open={depositOpen} onClose={() => closeModal()} onSubmit={closeModal} />
       <StakeModal open={stakeOpen} onClose={() => closeStakeModal()} onSubmit={closeStakeModal} />
       <LoanRequestModal open={loanRequestOpen} onClose={() => closeLoanRequestModal()} onSubmit={handleLoanSubmit} />
+      <LoanPaymentModal 
+        open={loanPaymentOpen} 
+        onClose={() => closeLoanPaymentModal()} 
+        onSubmit={handleLoanPaymentSubmit}
+        loan={selectedLoan}
+      />
       <div className="overview-section">
         <div className="overview-section-title">Outstanding Loans</div>
         <div className="overview-loans-table-card">
@@ -127,7 +153,12 @@ const OverviewPage = () => {
                   <td>{formatCurrency(loan.collateral.toString())}</td>
                   <td>{formatCurrency((loan.originalBalance - loan.remainingBalance).toString())}</td>
                   <td className="overview-loan-actions">
-                    <button className="btn btn-blue-filled overview-pay-btn">Make a Payment</button>
+                    <button 
+                      className="btn btn-blue-filled overview-pay-btn"
+                      onClick={() => openLoanPayment(loan)}
+                    >
+                      Make a Payment
+                    </button>
                   </td>
                 </tr>
               ))}
