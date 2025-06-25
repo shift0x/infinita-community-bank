@@ -140,7 +140,7 @@ const LoanRequestModal = ({ open, onClose, onSubmit }) => {
 
       onSubmit();
     } catch (err) {
-      alert(err);
+      console.log(err);
     }
   }
 

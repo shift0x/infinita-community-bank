@@ -96,7 +96,7 @@ const LoanPaymentModal = ({ open, onClose, onSubmit, loan }) => {
 
       onSubmit();
     } catch (err) {
-      alert(err);
+      console.log(err);
     }
   }
 

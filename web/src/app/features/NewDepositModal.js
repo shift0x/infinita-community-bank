@@ -71,7 +71,7 @@ const NewDepositModal = ({ open, onClose, onSubmit }) => {
       setAmount('');
       onSubmit();
     } catch(err){
-      alert(err);
+      console.log(err);
     }
   }
 
