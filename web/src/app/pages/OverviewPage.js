@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './OverviewPage.css';
 import NewDepositModal from '../features/NewDepositModal';
 import StakeModal from '../features/StakeModal';
@@ -8,31 +8,17 @@ import { chain } from '../lib/chain';
 import { parseEther } from 'viem';
 import { useWriteContract, useAccount } from 'wagmi';
 import { useUserState } from '../providers/UserStateProvider';
+import { formatCurrency } from '../lib/currency';
 
-const outstandingLoans = [
-  {
-    name: 'Mortgage Loan',
-    details: '$150,000 – 30 years',
-    due: '$1,200 due',
-    interest: '6.2%',
-    paymentsRemaining: 24,
-  },
-  {
-    name: 'Auto Loan',
-    details: '$30,000 – 5 years',
-    due: '$350 due',
-    interest: '7.1%',
-    paymentsRemaining: 8,
-  },
-];
 
 const OverviewPage = () => {
   const [depositOpen, setDepositOpen] = useState(false);
   const [stakeOpen, setStakeOpen] = useState(false);
   const [loanRequestOpen, setLoanRequestOpen] = useState(false);
+  const [outstandingLoans, setOutstandingLoans] = useState([]);
   const { writeContract } = useWriteContract();
   const { address } = useAccount();
-  const { balances, isLoading, updateBalances } = useUserState();
+  const { userLoans, userLoanAmountOwed, balances, isLoading, updateBalances } = useUserState();
 
   const closeModal = () => {
     setDepositOpen(false);
@@ -51,6 +37,12 @@ const OverviewPage = () => {
     // TODO: Handle loan submission logic here
     closeLoanRequestModal();
   };
+
+  useEffect(() => {
+    const openLoans = userLoans.filter(loan => { return loan.status == "Open"});
+
+    setOutstandingLoans(openLoans);
+  }, [userLoans])
 
   const mintUSDC = async () => {
     const amount = 100000
@@ -77,7 +69,12 @@ const OverviewPage = () => {
     <div className="overview-content">
       <div className="overview-header-row">
         <h2 className="loan-title">Account Overview</h2>
-        <button className="btn mint-test-usdc-link" onClick={mintUSDC}>Mint 100,000 Test USDC</button>
+        {
+          balances.usdc == 0 ?
+            <button className="btn mint-test-usdc-link" onClick={mintUSDC}>Mint 100,000 Test USDC</button> :
+            <button className="btn mint-test-usdc-link">{formatCurrency(balances.usdc.toString())} Test USDC</button>
+        }
+        
       </div>
       <div className="overview-cards">
         <div className="overview-card">
@@ -98,8 +95,8 @@ const OverviewPage = () => {
         </div>
         <div className="overview-card">
           <div className="overview-card-title">Loans Owned</div>
-          <div className="overview-balance">$7,500.00</div>
-          <div className="overview-label">3 active loans</div>
+          <div className="overview-balance">{formatCurrency(userLoanAmountOwed.toString())}</div>
+          <div className="overview-label">{userLoans.length} active loans</div>
           <button className="btn btn-blue-filled overview-new-loan-btn" onClick={() => setLoanRequestOpen(true)}>New Loan Application</button>
         </div>
       </div>
@@ -114,23 +111,23 @@ const OverviewPage = () => {
               <tr>
                 <th>Loan</th>
                 <th>Interest Rate</th>
-                <th>Payments Remaining</th>
-                <th>Amount Due</th>
+                <th>Collateral</th>
+                <th>Amount Paid</th>
                 <th>Action</th>
               </tr>
             </thead>
             <tbody>
               {outstandingLoans.map((loan, idx) => (
-                <tr key={loan.name}>
+                <tr key={loan.id}>
                   <td>
-                    <span className="overview-loan-name">{loan.name}</span>
-                    <span className="overview-loan-details">{loan.details}</span>
+                    <span className="overview-loan-name">{loan.details.purpose} Loan</span>
+                    <span className="overview-loan-details">{formatCurrency(loan.amount.toString())} - {loan.term} Months</span>
                   </td>
-                  <td>{loan.interest}</td>
-                  <td>{loan.paymentsRemaining}</td>
-                  <td>{loan.due}</td>
+                  <td>{loan.interestRate * 100}%</td>
+                  <td>{formatCurrency(loan.collateral.toString())}</td>
+                  <td>{formatCurrency((loan.originalBalance - loan.remainingBalance).toString())}</td>
                   <td className="overview-loan-actions">
-                    <button className="btn btn-blue-filled overview-pay-btn">Make Payment</button>
+                    <button className="btn btn-blue-filled overview-pay-btn">Make a Payment</button>
                   </td>
                 </tr>
               ))}

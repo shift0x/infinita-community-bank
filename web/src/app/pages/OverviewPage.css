@@ -104,6 +104,7 @@
   font-weight: 600;
   color: #185abc;
   display: block;
+  text-transform: capitalize ;
 }
 .overview-loan-details {
   color: #7a8ca3;

@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { useAccount } from 'wagmi';
+import { useAccount, useWriteContract } from 'wagmi';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { parseCurrency } from '../lib/currency';
 import CurrencyInput from '../components/CurrencyInput';
 import './NewDepositModal.css'; // Reusing the same styles
 import './LoanRequestModal.css'; // Additional styles for loan-specific fields
+import { lendingVaultABI, lendingVaultContract, tokens } from '../lib/contracts';
+import { chain } from '../lib/chain';
+import { parseEther, parseUnits } from 'viem';
+import { ensureTokenApproval, getUserTokenBalance } from '../lib/tokenUtils';
+import { useUserState } from '../providers/UserStateProvider';
 
 const LoanRequestModal = ({ open, onClose, onSubmit }) => {
   const [formData, setFormData] = useState({
@@ -14,8 +19,10 @@ const LoanRequestModal = ({ open, onClose, onSubmit }) => {
     details: '',
     purpose: 'personal'
   });
-  const { isConnected } = useAccount();
+  const { address, isConnected } = useAccount();
   const { openConnectModal } = useConnectModal();
+  const { writeContractAsync } = useWriteContract();
+  const { balances, updateBalances } = useUserState();
 
   useEffect(() => {
     if (open) {
@@ -48,6 +55,16 @@ const LoanRequestModal = ({ open, onClose, onSubmit }) => {
       alert('Please enter a valid loan amount');
       return;
     }
+
+    if(collateralAmount < loanAmount*.10){
+      alert('Collateral amount must be at least 10% of loan amount');
+      return;
+    }
+
+    if(collateralAmount > balances.usdc){
+      alert('insufficent user funds for collateral amount');
+      return
+    }
     
     if (!formData.term || Number(formData.term) <= 0) {
       alert('Please enter a valid loan term');
@@ -59,13 +76,25 @@ const LoanRequestModal = ({ open, onClose, onSubmit }) => {
       return;
     }
 
+    const usdc = tokens[chain.id].USDC
+    const vault = lendingVaultContract.addresses[chain.id]
+
+    const loanValueUSDCBalance = await getUserTokenBalance({token: usdc, owner: vault});
+
+    if(loanValueUSDCBalance < loanAmount){
+      alert('Loan vault does not have enough funds to fund loan request');
+      return;
+    }
+
     const loanRequest = {
       amount: loanAmount,
-      collateral: collateralAmount || '0',
+      collateral: collateralAmount,
       term: Number(formData.term),
       details: formData.details.trim(),
       purpose: formData.purpose
     };
+
+    await createLoanRequest(loanRequest);
 
     // Reset form
     setFormData({
@@ -75,9 +104,45 @@ const LoanRequestModal = ({ open, onClose, onSubmit }) => {
       details: '',
       purpose: 'personal'
     });
-
-    onSubmit(loanRequest);
   };
+
+  const createLoanRequest = async(loanInfo) => {
+    // Ensure USDC token approval so collateral can be transferred to loanVault
+    const err = await ensureTokenApproval({
+      tokenAddress: tokens[chain.id].USDC,
+      ownerAddress: address,
+      spenderAddress: lendingVaultContract.addresses[chain.id], 
+      amount: loanInfo.collateral,
+      writeContractAsync
+    });
+
+    if (err != null) { 
+      alert(err);
+      return; 
+    }
+
+    const tx = {
+      abi: lendingVaultContract.abi,
+      address: lendingVaultContract.addresses[chain.id],
+      functionName: "submitLoanRequest",
+      args: [
+        parseEther(loanInfo.amount.toString()),
+        parseEther(loanInfo.collateral.toString()),
+        parseUnits(loanInfo.term.toString(), 0),
+        JSON.stringify(loanInfo)
+      ]
+    };
+
+    try {
+      await writeContractAsync(tx);
+
+      setTimeout(() => { updateBalances(); }, 2000);
+
+      onSubmit();
+    } catch (err) {
+      alert(err);
+    }
+  }
 
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -100,8 +165,9 @@ const LoanRequestModal = ({ open, onClose, onSubmit }) => {
 
           <CurrencyInput
             id="collateral-amount"
-            label="Collateral Amount (Optional)"
+            label="Collateral Amount (Min. 10% of loan amount)"
             value={formData.collateral}
+            availableBalance={balances.usdc}
             onChange={(value) => handleInputChange('collateral', value)}
             helperText="Enter collateral amount to secure the loan (USDC)"
           />

@@ -310,7 +310,7 @@ export const erc20ABI = [
   ]
 
 
-export const lendingVaultABI = [
+const lendingVaultABI = [
     {
       "inputs": [
         {
@@ -970,16 +970,16 @@ export const mintableTokenABI = [
 
 export const  tokens = {
   84532: {
-    USDC: "0x861C552fFDD44c0953cc07F672d4c7CC7CdFF68a",
-    BANK: "0xaC4551225f03203e9f88bDBc43121d83D0Bd7cDd",
-    sBANK: "0x0acb56842D28d177590044f9BA0Af1A05db3bDA8"
+    USDC: "0x89121438379250444774D34D0c2966d9f336e9C7",
+    BANK: "0x175EE02Ec50359878E8a9b16C327bC1107e300B9",
+    sBANK: "0x503c7d2F650e9e5aaa1186aCF5090ff3C2C84193"
   }
 }
 
 export const usdcContract = {
     addresses: {
         31337: '0x5FbDB2315678afecb367f032d93F642f64180aa3', // Localhost Hardhat
-        84532: '0x861C552fFDD44c0953cc07F672d4c7CC7CdFF68a' // Base Sepolia
+        84532: '0x89121438379250444774D34D0c2966d9f336e9C7' // Base Sepolia
     },
     abi: erc20ABI
 }
@@ -987,7 +987,7 @@ export const usdcContract = {
 export const bankContract = {
     addresses: {
         31337: '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512', // Localhost Hardhat
-        84532: '0x24367940bE42720e72046601074ad916f54DF85f' // Base Sepolia
+        84532: '0x3cA3a2319a4194D269C9e8a0d1ab4887e60D7EAA' // Base Sepolia
     },
     abi: [
     {
@@ -1144,6 +1144,13 @@ export const bankContract = {
       "type": "function"
     }
     ]
+}
+
+export const lendingVaultContract = {
+  addresses: {
+    84532: '0x77e8c8CAb0E105EBA132A37a5c09D1F4e54Fd98e'
+  },
+  abi: lendingVaultABI
 }
 
 
